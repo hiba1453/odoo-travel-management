@@ -36,8 +36,7 @@ The module aims to improve transparency, efficiency, and traceability of employe
 ---
 
 ## 📂 Module Structure
-
-
+~~~text
 travel_management/
 │
 ├── __init__.py
@@ -53,3 +52,4 @@ travel_management/
 ├── data/
 │   └── sequence.xml
 └── static/
+~~~
