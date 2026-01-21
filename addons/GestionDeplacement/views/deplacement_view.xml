@@ -1,0 +1,144 @@
+<odoo>
+    <record id="view_form_deplacement" model="ir.ui.view">
+        <field name="name">gestion.deplacement.form</field>
+        <field name="model">gestion.deplacement</field>
+        <field name="arch" type="xml">
+            <form string="Demande de déplacement">
+                <header>
+                    <button name="action_soumettre_validation" string="Soumettre à validation" 
+                            type="object" class="oe_highlight"
+                            invisible="state != 'brouillon'"/>
+                    <button name="action_valider" string="Valider" 
+                            type="object" class="btn-primary"
+                            invisible="state != 'attente_validation' or not is_current_user_manager"/>
+                    <button name="action_rejeter" string="Rejeter" 
+                            type="object" class="btn-secondary"
+                            invisible="state != 'attente_validation' or not is_current_user_manager"/>
+                    <button name="action_reset_to_draft" string="Remettre en brouillon" 
+                            type="object"
+                            invisible="state not in ['valide', 'rejete'] or not is_current_user_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="brouillon,attente_validation,valide"/>
+                    <field name="is_current_user_manager" invisible="True"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Informations générales">
+                            <field name="employee_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="manager_id" readonly="True" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="objet_mission" placeholder="Ex: Formation, Réunion client, etc." readonly="is_current_user_manager"/>
+                        </group>
+                        <group string="Dates et Montant">
+                            <field name="date_debut" widget="date" readonly="is_current_user_manager"/>
+                            <field name="date_fin" widget="date" readonly="is_current_user_manager"/>
+                            <field name="type_deplacement" readonly="True" widget="badge" 
+                                   decoration-success="type_deplacement == 'national'"
+                                   decoration-info="type_deplacement == 'international'"/>
+                            <field name="montant_frais" readonly="True" string="Montant total (€)"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Destination">
+                        <group>
+                            <field name="pays_id" options="{'no_create': True, 'no_create_edit': True}" readonly="is_current_user_manager"/>
+                            <field name="ville_id" options="{'no_create': False, 'no_create_edit': False}" readonly="is_current_user_manager"/>
+                            <field name="distance_km" readonly="is_current_user_manager"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Transport">
+                        <group>
+                            <field name="mode_transport" widget="radio" options="{'horizontal': true}" readonly="is_current_user_manager"/>
+                            <field name="vehicule_id" invisible="mode_transport != 'vehicule_service'" 
+                                   readonly="is_current_user_manager" 
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="classe" invisible="mode_transport != 'avion'" readonly="True" widget="badge"
+                                   decoration-success="classe == 'business'"
+                                   decoration-info="classe == 'eco'"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Documents">
+                        <field name="ordre_mission" filename="ordre_mission_filename" readonly="is_current_user_manager"/>
+                        <field name="ordre_mission_filename" invisible="True"/>
+                    </group>
+                    
+                    <group string="Motif de rejet" invisible="state != 'rejete'">
+                        <field name="motif_rejet" readonly="True" nolabel="True" placeholder="Aucun motif de rejet"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tree_deplacement" model="ir.ui.view">
+        <field name="name">gestion.deplacement.tree</field>
+        <field name="model">gestion.deplacement</field>
+        <field name="arch" type="xml">
+            <tree string="Déplacements" decoration-success="state == 'valide'" 
+                  decoration-danger="state == 'rejete'" 
+                  decoration-info="state == 'attente_validation'"
+                  decoration-muted="state == 'brouillon'">
+                <field name="employee_id" string="Employé"/>
+                <field name="objet_mission" string="Objet de la mission"/>
+                <field name="pays_id" string="Pays"/>
+                <field name="ville_id" string="Ville"/>
+                <field name="date_debut" string="Date début"/>
+                <field name="date_fin" string="Date fin"/>
+                <field name="mode_transport" string="Transport"/>
+                <field name="montant_frais" string="Montant (€)"/>
+                <field name="state" widget="badge" 
+                       decoration-success="state == 'valide'" 
+                       decoration-danger="state == 'rejete'" 
+                       decoration-info="state == 'attente_validation'"
+                       decoration-muted="state == 'brouillon'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_search_deplacement" model="ir.ui.view">
+        <field name="name">gestion.deplacement.search</field>
+        <field name="model">gestion.deplacement</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un déplacement">
+                <field name="employee_id" string="Employé"/>
+                <field name="objet_mission" string="Objet"/>
+                <field name="pays_id" string="Pays"/>
+                <field name="ville_id" string="Ville"/>
+                <field name="date_debut" string="Date début"/>
+                <field name="date_fin" string="Date fin"/>
+                
+                <filter string="Brouillon" name="brouillon" domain="[('state', '=', 'brouillon')]"/>
+                <filter string="En attente" name="attente" domain="[('state', '=', 'attente_validation')]"/>
+                <filter string="Validé" name="valide" domain="[('state', '=', 'valide')]"/>
+                <filter string="Rejeté" name="rejete" domain="[('state', '=', 'rejete')]"/>
+                
+                <separator/>
+                <filter string="National" name="national" domain="[('type_deplacement', '=', 'national')]"/>
+                <filter string="International" name="international" domain="[('type_deplacement', '=', 'international')]"/>
+                
+                <group expand="0" string="Grouper par">
+                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Employé" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Pays" name="group_country" context="{'group_by': 'pays_id'}"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'type_deplacement'}"/>
+                    <filter string="Mode de transport" name="group_transport" context="{'group_by': 'mode_transport'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_gestion_deplacements" model="ir.actions.act_window">
+        <field name="name">Déplacements</field>
+        <field name="res_model">gestion.deplacement</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau déplacement
+            </p>
+            <p>
+                Gérez ici toutes les demandes de déplacement des employés.
+            </p>
+        </field>
+    </record>
+</odoo>
+

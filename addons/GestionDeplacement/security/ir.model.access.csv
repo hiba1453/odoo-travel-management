@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gestion_deplacement_user,access_gestion_deplacement_user,model_gestion_deplacement,base.group_user,1,1,1,1
+access_gestion_deplacement_rejet_wizard_user,access_gestion_deplacement_rejet_wizard_user,model_gestion_deplacement_rejet_wizard,base.group_user,1,1,1,1
+access_gestion_ville_user,access_gestion_ville_user,model_gestion_ville,base.group_user,1,1,1,1

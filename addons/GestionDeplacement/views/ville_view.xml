@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue liste des villes -->
+    <record id="view_tree_ville" model="ir.ui.view">
+        <field name="name">gestion.ville.tree</field>
+        <field name="model">gestion.ville</field>
+        <field name="arch" type="xml">
+            <tree string="Villes">
+                <field name="name"/>
+                <field name="country_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue formulaire des villes -->
+    <record id="view_form_ville" model="ir.ui.view">
+        <field name="name">gestion.ville.form</field>
+        <field name="model">gestion.ville</field>
+        <field name="arch" type="xml">
+            <form string="Ville">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="country_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue recherche des villes -->
+    <record id="view_search_ville" model="ir.ui.view">
+        <field name="name">gestion.ville.search</field>
+        <field name="model">gestion.ville</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher une ville">
+                <field name="name" string="Nom de la ville"/>
+                <field name="country_id" string="Pays"/>
+                <filter string="Par pays" name="group_by_country" context="{'group_by': 'country_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action pour les villes (déplacée dans menu.xml pour éviter les problèmes de référence) -->
+
+</odoo>
+

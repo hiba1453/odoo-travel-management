@@ -1,0 +1,26 @@
+<odoo>
+    <!-- Action pour les villes (définie ici pour éviter les problèmes de référence) -->
+    <record id="action_gestion_villes" model="ir.actions.act_window">
+        <field name="name">Villes</field>
+        <field name="res_model">gestion.ville</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer une nouvelle ville
+            </p>
+            <p>
+                Gérez ici toutes les villes disponibles pour les déplacements.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_gestion_deplacements_root" name="Gestion des déplacements" sequence="10"/>
+    <menuitem id="menu_gestion_deplacements" name="Déplacements"
+              parent="menu_gestion_deplacements_root"
+              action="action_gestion_deplacements"
+              sequence="10"/>
+    <menuitem id="menu_gestion_villes" name="Villes"
+              parent="menu_gestion_deplacements_root"
+              action="action_gestion_villes"
+              sequence="20"/>
+</odoo>

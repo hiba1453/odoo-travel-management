@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_rejet_wizard_form" model="ir.ui.view">
+        <field name="name">gestion.deplacement.rejet.wizard.form</field>
+        <field name="model">gestion.deplacement.rejet.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Motif de rejet">
+                <group>
+                    <field name="deplacement_id" invisible="True"/>
+                    <field name="motif_rejet" placeholder="Veuillez indiquer le motif de rejet de cette demande de déplacement..."/>
+                </group>
+                <footer>
+                    <button name="action_confirm_rejet" string="Confirmer le rejet" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_rejet_wizard" model="ir.actions.act_window">
+        <field name="name">Motif de rejet</field>
+        <field name="res_model">gestion.deplacement.rejet.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
+
